@@ -1,12 +1,17 @@
-package com.project.learningblog.entity;
+package com.project.learningblog.post.entity;
 
+
+import com.project.learningblog.post.service.dto.command.CreatePostCommand;
+import com.project.learningblog.post.service.dto.result.PostResult;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "learning_posts")
+@Getter
 public class LearningPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,5 +46,25 @@ public class LearningPost {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<LearningTag> tags;
+
+
+    public static LearningPost of(CreatePostCommand createPostCommand) {
+        return new LearningPost(
+                createPostCommand.
+        );
+    }
+
+
+    public PostResult toResult() {
+        List<String> tags = this.tags.stream()
+                .map(LearningTag::getName)
+                .toList();
+
+        List<String> paths = images.stream()
+                .map(LearningPostImage::getPath)
+                .toList();
+
+        return new PostResult(title, user.getUsername(), content, category, paths, tags);
+    }
 
 }
