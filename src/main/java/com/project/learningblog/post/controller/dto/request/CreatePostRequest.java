@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CreatePostRequest {
     private String title;
-    private String userId;
+    private Long userId;
     private String content;
     private String category;
 

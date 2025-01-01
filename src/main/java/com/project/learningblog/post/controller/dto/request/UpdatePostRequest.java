@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdatePostRequest {
     private String title;
+    private Long postId;
     private String content;
     private String category;
 
