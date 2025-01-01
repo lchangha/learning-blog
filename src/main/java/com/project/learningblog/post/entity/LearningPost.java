@@ -2,9 +2,13 @@ package com.project.learningblog.post.entity;
 
 
 import com.project.learningblog.post.service.dto.command.CreatePostCommand;
+import com.project.learningblog.post.service.dto.command.UpdatePostCommand;
 import com.project.learningblog.post.service.dto.result.PostResult;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +16,8 @@ import java.util.List;
 @Entity
 @Table(name = "learning_posts")
 @Getter
+@Builder
+@AllArgsConstructor
 public class LearningPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +42,8 @@ public class LearningPost {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "post_id")
     private List<LearningPostImage> images;
 
     @ManyToMany
@@ -48,10 +55,16 @@ public class LearningPost {
     private List<LearningTag> tags;
 
 
-    public static LearningPost of(CreatePostCommand createPostCommand) {
-        return new LearningPost(
-                createPostCommand.
-        );
+    public static LearningPost create(CreatePostCommand command,
+                                      User user,
+                                      List<LearningPostImage> learningPostImages) {
+        return new LearningPostBuilder()
+                .title(command.getTitle())
+                .content(command.getContent())
+                .user(user)
+                .category(command.getCategory())
+                .images(learningPostImages)
+                .build();
     }
 
 
@@ -67,4 +80,13 @@ public class LearningPost {
         return new PostResult(title, user.getUsername(), content, category, paths, tags);
     }
 
+    public LearningPost update(UpdatePostCommand command,
+                                      List<LearningPostImage> learningPostImages) {
+        return new LearningPostBuilder()
+                .title(command.getTitle())
+                .content(command.getContent())
+                .category(command.getCategory())
+                .images(learningPostImages)
+                .build();
+    }
 }
