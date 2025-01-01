@@ -4,6 +4,7 @@ import com.project.learningblog.post.controller.dto.ApiResponse;
 import com.project.learningblog.post.controller.dto.request.CreatePostRequest;
 import com.project.learningblog.post.controller.dto.request.UpdatePostRequest;
 import com.project.learningblog.post.controller.dto.response.PostResponse;
+import com.project.learningblog.post.model.ImageFile;
 import com.project.learningblog.post.service.PostService;
 import com.project.learningblog.post.service.dto.command.CreatePostCommand;
 import com.project.learningblog.post.service.dto.command.UpdatePostCommand;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -75,9 +77,7 @@ public class PostController {
                 createPostRequest.getContent(),
                 createPostRequest.getCategory(),
                 createPostRequest.getTags(),
-                createPostRequest.getImages().stream()
-                        .map(this::convertToBoxedBytes)
-                        .toList()
+                convertToImageFiles(createPostRequest.getImages())
         );
     }
 
@@ -89,24 +89,29 @@ public class PostController {
                 updatePostRequest.getContent(),
                 updatePostRequest.getCategory(),
                 updatePostRequest.getTags(),
-                updatePostRequest.getImages().stream()
-                        .map(this::convertToBoxedBytes)
-                        .toList()
+                convertToImageFiles(updatePostRequest.getImages())
         );
     }
 
-    private Byte[] convertToBoxedBytes(MultipartFile file) {
+    private ImageFile convertToImageFile(MultipartFile file) {
         try {
-            byte[] bytes = file.getBytes();
-            return IntStream.range(0, bytes.length)
-                    .map(i -> bytes[i] & 0xFF)
-                    .boxed()
-                    .toArray(Byte[]::new);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            return new ImageFile(
+                    file.getOriginalFilename(),
+                    file.getInputStream(),
+                    file.getContentType(),
+                    file.getSize()
+            );
+        } catch (IOException e) {
+            throw new IllegalArgumentException("파일 변환 중 오류 발생", e);
         }
     }
+
+    private List<ImageFile> convertToImageFiles(List<MultipartFile> files) {
+        return files.stream()
+                .map(this::convertToImageFile)
+                .toList();
+    }
+
 
 
 }
