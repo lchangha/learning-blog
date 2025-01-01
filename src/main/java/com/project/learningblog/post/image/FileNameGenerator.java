@@ -1,6 +1,8 @@
 package com.project.learningblog.post.image;
 
 
+import com.project.learningblog.post.model.ImageFile;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,16 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Component
+@NoArgsConstructor
 public class FileNameGenerator {
 
-    public String generateFileName(MultipartFile file) {
-        String extension = getFileExtension(file.getOriginalFilename());
+    public String generateFileName(ImageFile file) {
+        String extension = getFileExtension(file.getName());
         return UUID.randomUUID().toString() + extension;
-    }
-
-    public String generateFolderName(LocalDate localDate) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        return localDate.format(format);
     }
 
     private String getFileExtension(String filename) {
