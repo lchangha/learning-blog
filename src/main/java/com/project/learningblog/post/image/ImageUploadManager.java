@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 
 
 @Service
@@ -17,7 +16,7 @@ public class ImageUploadManager {
 
     private final FileNameGenerator fileNameGenerator;
     private final FolderNameGenerator folderNameGenerator;
-    private final FileStorageHandler fileStorageHandler;
+    private final StorageHandler storageHandler;
     private final ImageValidator imageValidator;
 
 
@@ -25,15 +24,27 @@ public class ImageUploadManager {
         try {
             imageValidator.validate(file);
 
-            String folderName = folderNameGenerator.generateFolderNameByNow();
-            String fileName = fileNameGenerator.generateFileName(file);
+            String[] nameArr = nameGenerate(file);
 
-            Path folderPath = Paths.get("images", folderName);
+            String folderName = nameArr[0];
+            String fileName = nameArr[1];
 
-            return fileStorageHandler.saveFile(file, folderPath, fileName);
+
+            Path folderPath = pathGenerate(folderName);
+            return storageHandler.saveFile(file, folderPath, fileName);
         } catch (IOException e) {
             throw new ImageUploadException(e);
         }
+    }
+
+    private String[] nameGenerate(ImageFile file) {
+        String folderName = folderNameGenerator.generateFolderNameByNow();
+        String fileName = fileNameGenerator.generateFileName(file);
+        return new String[] { folderName, fileName };
+    }
+
+    private Path pathGenerate(String path) {
+        return Paths.get("images", path);
     }
 
 
