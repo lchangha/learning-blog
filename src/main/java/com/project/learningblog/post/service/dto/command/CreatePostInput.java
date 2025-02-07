@@ -13,9 +13,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePostCommand implements Command {
+public class CreatePostInput implements SupportsImages {
     private String title;
-    private Long postId;
+    private Long userId;
     private String content;
     private String category;
 

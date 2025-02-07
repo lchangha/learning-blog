@@ -1,14 +1,13 @@
 package com.project.learningblog.post.entity;
 
 
-import com.project.learningblog.post.service.dto.command.CreatePostCommand;
-import com.project.learningblog.post.service.dto.command.UpdatePostCommand;
+import com.project.learningblog.post.service.dto.command.CreatePostInput;
+import com.project.learningblog.post.service.dto.command.UpdatePostInput;
 import com.project.learningblog.post.service.dto.result.PostResult;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,7 +54,7 @@ public class LearningPost {
     private List<LearningTag> tags;
 
 
-    public static LearningPost create(CreatePostCommand command,
+    public static LearningPost create(CreatePostInput command,
                                       User user,
                                       List<LearningPostImage> learningPostImages) {
         return new LearningPostBuilder()
@@ -80,8 +79,8 @@ public class LearningPost {
         return new PostResult(title, user.getUsername(), content, category, paths, tags);
     }
 
-    public LearningPost update(UpdatePostCommand command,
-                                      List<LearningPostImage> learningPostImages) {
+    public LearningPost update(UpdatePostInput command,
+                               List<LearningPostImage> learningPostImages) {
         return new LearningPostBuilder()
                 .title(command.getTitle())
                 .content(command.getContent())

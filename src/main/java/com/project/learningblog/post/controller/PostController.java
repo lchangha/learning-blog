@@ -6,8 +6,8 @@ import com.project.learningblog.post.controller.dto.request.UpdatePostRequest;
 import com.project.learningblog.post.controller.dto.response.PostResponse;
 import com.project.learningblog.post.model.ImageFile;
 import com.project.learningblog.post.service.PostService;
-import com.project.learningblog.post.service.dto.command.CreatePostCommand;
-import com.project.learningblog.post.service.dto.command.UpdatePostCommand;
+import com.project.learningblog.post.service.dto.command.CreatePostInput;
+import com.project.learningblog.post.service.dto.command.UpdatePostInput;
 import com.project.learningblog.post.service.dto.result.PostResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("api/board")
@@ -39,14 +37,14 @@ public class PostController {
 
     @PostMapping("posts")
     public ApiResponse<PostResponse> createPost(@ModelAttribute CreatePostRequest createPostRequest) {
-        CreatePostCommand command = createRequestToCommand(createPostRequest);
+        CreatePostInput command = createRequestToCommand(createPostRequest);
         postService.createPost(command);
         return ApiResponse.success(null);
     }
 
     @PutMapping("posts/{id}")
     public ApiResponse<PostResponse> updatePost(@PathVariable long id, @ModelAttribute UpdatePostRequest updatePostRequest) {
-        UpdatePostCommand command = updateRequestToCommand(id, updatePostRequest);
+        UpdatePostInput command = updateRequestToCommand(id, updatePostRequest);
         postService.updatePostById(command);
         return ApiResponse.success(null);
 
@@ -70,8 +68,8 @@ public class PostController {
     }
 
 
-    private CreatePostCommand createRequestToCommand(CreatePostRequest createPostRequest) {
-        return new CreatePostCommand(
+    private CreatePostInput createRequestToCommand(CreatePostRequest createPostRequest) {
+        return new CreatePostInput(
                 createPostRequest.getTitle(),
                 createPostRequest.getUserId(),
                 createPostRequest.getContent(),
@@ -82,8 +80,8 @@ public class PostController {
     }
 
 
-    private UpdatePostCommand updateRequestToCommand(long userId, UpdatePostRequest updatePostRequest) {
-        return new UpdatePostCommand(
+    private UpdatePostInput updateRequestToCommand(long userId, UpdatePostRequest updatePostRequest) {
+        return new UpdatePostInput(
                 updatePostRequest.getTitle(),
                 userId,
                 updatePostRequest.getContent(),

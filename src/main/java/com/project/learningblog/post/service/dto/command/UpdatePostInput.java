@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.List;
@@ -14,9 +13,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostCommand implements Command {
+public class UpdatePostInput implements SupportsImages {
     private String title;
-    private Long userId;
+    private Long postId;
     private String content;
     private String category;
 

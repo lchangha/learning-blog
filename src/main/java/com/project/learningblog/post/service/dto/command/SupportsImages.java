@@ -4,6 +4,6 @@ import com.project.learningblog.post.model.ImageFile;
 
 import java.util.List;
 
-public interface Command {
+public interface SupportsImages {
     List<ImageFile> getImages();
 }

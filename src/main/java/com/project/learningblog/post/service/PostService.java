@@ -6,9 +6,9 @@ import com.project.learningblog.post.entity.User;
 import com.project.learningblog.post.image.ImageUploadManager;
 import com.project.learningblog.post.repository.PostRepository;
 import com.project.learningblog.post.repository.UserRepository;
-import com.project.learningblog.post.service.dto.command.Command;
-import com.project.learningblog.post.service.dto.command.CreatePostCommand;
-import com.project.learningblog.post.service.dto.command.UpdatePostCommand;
+import com.project.learningblog.post.service.dto.command.SupportsImages;
+import com.project.learningblog.post.service.dto.command.CreatePostInput;
+import com.project.learningblog.post.service.dto.command.UpdatePostInput;
 import com.project.learningblog.post.service.dto.result.PostResult;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -38,7 +38,7 @@ public class PostService {
     }
 
     @Transactional
-    public void createPost(CreatePostCommand command) {
+    public void createPost(CreatePostInput command) {
 
         List<LearningPostImage> learningPostImages = imageUpload(command);
 
@@ -48,7 +48,7 @@ public class PostService {
         postRepository.save(learningPost);
     }
 
-    public void updatePostById(UpdatePostCommand command) {
+    public void updatePostById(UpdatePostInput command) {
 
         List<LearningPostImage> learningPostImages = imageUpload(command);
 
@@ -63,9 +63,9 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    private List<LearningPostImage> imageUpload(Command command) {
-        if (!command.getImages().isEmpty()) {
-            return command.getImages().stream()
+    private List<LearningPostImage> imageUpload(SupportsImages supportsImages) {
+        if (!supportsImages.getImages().isEmpty()) {
+            return supportsImages.getImages().stream()
                     .map(imageUploadManager::handleUpload)
                     .map(LearningPostImage::of)
                     .toList();
